@@ -2,14 +2,28 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// POST endpoint
-app.post('/bfhl', (req, res) => {
+// Root endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Welcome to the Full Stack API. Use POST /api/bfhl to process data.',
+    operation_code: 1
+  });
+});
+
+// GET endpoint for /bfhl
+app.get('/api/bfhl', (req, res) => {
+  res.status(200).json({
+    operation_code: 1
+  });
+});
+
+// POST endpoint for /bfhl
+app.post('/api/bfhl', (req, res) => {
   try {
     const { data } = req.body;
     
@@ -50,9 +64,7 @@ app.post('/bfhl', (req, res) => {
       } 
       // Check if it's a multi-character alphabet string
       else if (/^[a-zA-Z]+$/.test(strItem)) {
-        // Add the uppercase version to alphabets array
         alphabets.push(strItem.toUpperCase());
-        // Split into individual characters for concatenation
         strItem.split('').forEach(char => alphaChars.push(char));
       }
       // Otherwise, it's a special character
@@ -75,9 +87,9 @@ app.post('/bfhl', (req, res) => {
     // Response object
     const response = {
       is_success: true,
-      user_id: "john_doe_17091999", // Replace with your actual user_id
-      email: "john@xyz.com", // Replace with your email
-      roll_number: "ABCD123", // Replace with your roll number
+      user_id: "john_doe_17091999",
+      email: "john@xyz.com",
+      roll_number: "ABCD123",
       odd_numbers: oddNumbers,
       even_numbers: evenNumbers,
       alphabets: alphabets,
@@ -95,14 +107,5 @@ app.post('/bfhl', (req, res) => {
   }
 });
 
-// GET endpoint (optional, for testing)
-app.get('/bfhl', (req, res) => {
-  res.status(200).json({
-    operation_code: 1
-  });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Export the Express API for Vercel
+module.exports = app;
